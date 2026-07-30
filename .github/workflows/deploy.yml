@@ -1,12 +1,16 @@
 name: Deploy Astro to GitHub Pages
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches:
-      - dev
+      - gh-pages
+  workflow_dispatch: {}
 
 jobs:
   build-and-deploy:
+     # only run when the closed PR was merged (not simply closed)
+    if: ${{ github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
 
     steps:
@@ -16,8 +20,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
           cache: pnpm
+
+      - name: Enable Corepack and activate pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
