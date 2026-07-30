@@ -6,7 +6,8 @@ import { defineConfig, fontProviders } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://example.com',
+	site: 'https://weisk.github.io',
+	base: '/astro-turfing-testing-nikon',
 	output: 'static',
 	integrations: [mdx(), sitemap()],
 	fonts: [
