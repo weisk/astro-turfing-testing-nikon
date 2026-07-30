@@ -1,0 +1,46 @@
+name: Build & Test (dev)
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Install pnpm
+        run: npm install -g pnpm@10
+
+      - name: Install dependencies
+        run: pnpm install
+
+      # - name: Lint (if configured)
+      #   run: pnpm run lint
+      #   continue-on-error: false
+      #   if: ${{ hashFiles('package.json') || true }} # run when lint script exists; action will fail if lint script not present
+
+      # - name: Type check (if configured)
+      #   run: pnpm run type-check
+      #   if: ${{ always() }} # keep step, will fail only if script is present and errors
+
+      - name: Run tests (if configured)
+        run: pnpm test --silent
+        continue-on-error: false
+        if: ${{ always() }}
+
+      - name: Build
+        run: pnpm run build
